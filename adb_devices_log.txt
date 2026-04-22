@@ -1,0 +1,3 @@
+﻿List of devices attached
+PA8A10MGHB130039D	device
+

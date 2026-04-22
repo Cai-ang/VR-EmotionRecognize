@@ -1,0 +1,2 @@
+﻿Performing Push Install
+adb: error: failed to get feature set: device 'PA8A10MGHB1300399D' not found
