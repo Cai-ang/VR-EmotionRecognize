@@ -357,13 +357,15 @@ namespace MECSense
         void UpdateHandBuffer()
         {
             var joints = m_DataCollector.HandJoints;
-            if (joints == null || joints.Length < 21)
+            if (joints == null)
                 return;
 
-            // 更新3根指尖
+            // 更新3根指尖（带边界保护）
             for (int i = 0; i < 3; i++)
             {
                 int jointIdx = k_FingertipJoints[i];
+                if (jointIdx < 0 || jointIdx >= joints.Length)
+                    continue; // 跳过无效关节索引
                 Vector3 pos = joints[jointIdx];
 
                 // 对 xyz 分别进行低通滤波
