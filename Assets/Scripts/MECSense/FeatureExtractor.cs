@@ -87,10 +87,10 @@ namespace MECSense
         bool m_HandPrevInitialized;
 
         // 二阶巴特沃斯低通滤波器系数
-        float[] m_LowpassB; // 分子
-        float[] m_LowpassA; // 分母
-        float[][] m_FilterState = new float[3][]; // 每根指尖的滤波器状态 [3][4]
-        float[][] m_FilterInputBuffer = new float[3][];
+        float[] m_LowpassB; // 分子 [b0, b1, b2]
+        float[] m_LowpassA; // 分母 [1, a1, a2] (a0=1 归一化)
+        // 每根指尖 × 每轴独立滤波器状态: [3 fingertip][3 axis][4 state]
+        float[][][] m_FilterState;
         Vector3[] m_FilteredPositions = new Vector3[3];
 
         // 指尖关节索引
@@ -179,10 +179,13 @@ namespace MECSense
             m_LowpassB = new float[] { (1f - cosOmega) / (2f * a0), (1f - cosOmega) / a0, (1f - cosOmega) / (2f * a0) };
             m_LowpassA = new float[] { 1f, -2f * cosOmega / a0, (1f - alpha) / a0 };
 
+            // 为每根指尖 × 每轴分配4维状态 [x_n-1, x_n-2, y_n-1, y_n-2]
+            m_FilterState = new float[3][][];
             for (int i = 0; i < 3; i++)
             {
-                m_FilterState[i] = new float[2]; // 两个历史状态
-                m_FilterInputBuffer[i] = new float[2];
+                m_FilterState[i] = new float[3][];
+                for (int axis = 0; axis < 3; axis++)
+                    m_FilterState[i][axis] = new float[4]; // [x[n-1], x[n-2], y[n-1], y[n-2]]
             }
         }
 
@@ -386,23 +389,18 @@ namespace MECSense
 
         float ApplyLowpassFilter(int finger, int axis, float input)
         {
-            float[] x = m_FilterInputBuffer[finger];
-            float[] y = m_FilterState[finger];
-            // 注意：我们用 y[0] = 上上帧输出, y[1] = 上一帧输出, x[0] = 上一帧输入, x[1] = 当前输入
-            // 简化的二阶 IIR: y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]
-            // 用两个状态变量实现
-            float x0 = x[axis];
-            float y0 = y[axis];
+            // 状态: s[0]=x[n-1], s[1]=x[n-2], s[2]=y[n-1], s[3]=y[n-2]
+            float[] s = m_FilterState[finger][axis];
 
-            float output = m_LowpassB[0] * input + m_LowpassB[1] * x0 + m_LowpassB[2] * 0
-                         - m_LowpassA[1] * y0 - m_LowpassA[2] * 0;
+            // 二阶 IIR DF-II (Direct Form II Transposed):
+            // y[n] = b0*x[n] + s[0]
+            // s[0] = b1*x[n] - a1*y[n] + s[1]
+            // s[1] = b2*x[n] - a2*y[n]
+            float yn = m_LowpassB[0] * input + s[0];
+            s[0] = m_LowpassB[1] * input - m_LowpassA[1] * yn + s[1];
+            s[1] = m_LowpassB[2] * input - m_LowpassA[2] * yn;
 
-            x[axis] = input;   // 保存当前输入
-            y[axis] = output;  // 保存当前输出
-
-            // 二阶滤波：需要更多状态，这里简化为使用 axis 0,1 的历史
-            // 完整实现需要独立状态
-            return output;
+            return yn;
         }
 
         float ExtractHandJitter()
@@ -410,13 +408,16 @@ namespace MECSense
             int N = Mathf.Min(m_HandHistoryCount, k_HandWindowSize);
             if (N < 2) return 0f;
 
+            // 环形缓冲区：计算最旧样本的起始偏移
+            int startOffset = (m_HandHistoryCount - N + k_HandWindowSize) % k_HandWindowSize;
+
             float sum = 0f;
             for (int i = 0; i < 3; i++) // 3根指尖
             {
                 for (int j = 1; j < N; j++)
                 {
-                    int idxCurr = j % k_HandWindowSize;
-                    int idxPrev = (j - 1) % k_HandWindowSize;
+                    int idxCurr = (startOffset + j) % k_HandWindowSize;
+                    int idxPrev = (startOffset + j - 1) % k_HandWindowSize;
                     float diff = m_HandHistory[i][idxCurr] - m_HandHistory[i][idxPrev];
                     sum += diff * diff;
                 }
@@ -429,7 +430,7 @@ namespace MECSense
 
             if (m_EnableDebugLog)
             {
-                Debug.Log($"[MECSense] Hand Jitter: {m_JitterRate:F2} mm/s (N={N})");
+                Debug.Log($"[MECSense] Hand Jitter: {m_JitterRate:F2} mm/s (N={N}, startOffset={startOffset})");
             }
 
             return m_JitterRate;

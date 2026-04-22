@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/FTDemo.unity
     guid: c44f9c704b8979a46b405012729fa60e
+  - enabled: 0
+    path: Assets/Scenes/AdvancedEyeTracking.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     Unity.XR.PICO.LivePreview.Settings: {fileID: 11400000, guid: 528e8171a8daa9d4c90dcc6eb913cf82,
       type: 2}

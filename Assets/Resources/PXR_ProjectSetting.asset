@@ -16,11 +16,11 @@ MonoBehaviour:
   handTracking: 1
   adaptiveHand: 1
   highFrequencyHand: 1
-  openMRC: 0
+  openMRC: 1
   faceTracking: 1
   lipsyncTracking: 1
-  eyeTracking: 0
-  eyetrackingCalibration: 0
+  eyeTracking: 1
+  eyetrackingCalibration: 1
   enableETFR: 0
   latelatching: 0
   latelatchingDebug: 0

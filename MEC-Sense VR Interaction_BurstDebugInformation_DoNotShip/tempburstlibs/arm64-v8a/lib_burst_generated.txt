@@ -13,6 +13,7 @@ Library: D:\Desktop\PicoVR-InteractionSample-main\Temp\BurstOutput\tempburstlibs
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
 --assembly-defines=PICO.Platform;
+--assembly-defines=PICO.TobSupport;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
@@ -171,6 +172,7 @@ Library: D:\Desktop\PicoVR-InteractionSample-main\Temp\BurstOutput\tempburstlibs
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
 --assembly-defines=PICO.Platform;
+--assembly-defines=PICO.TobSupport;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
@@ -229,6 +231,7 @@ Library: D:\Desktop\PicoVR-InteractionSample-main\Temp\BurstOutput\tempburstlibs
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
 --assembly-defines=PICO.Platform;
+--assembly-defines=PICO.TobSupport;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
@@ -332,6 +335,7 @@ Library: D:\Desktop\PicoVR-InteractionSample-main\Temp\BurstOutput\tempburstlibs
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
 --assembly-defines=PICO.Platform;
+--assembly-defines=PICO.TobSupport;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
@@ -489,6 +493,7 @@ Library: D:\Desktop\PicoVR-InteractionSample-main\Temp\BurstOutput\tempburstlibs
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
 --assembly-defines=PICO.Platform;
+--assembly-defines=PICO.TobSupport;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System.Data;
