@@ -78,3 +78,10 @@ crashlytics-build.properties
 /Scripts/*$py.class
 
 **/pxr_benchmark_*/
+
+# Large font files (exceeds GitHub's 100MB limit)
+Assets/Fonts/SourceHanSansSC-Regular-2.asset
+Assets/Fonts/SourceHanSansSC-Regular-2.asset.meta
+Assets/Fonts/SourceHanSansSC-Regular-2.otf
+Assets/Fonts/SourceHanSansSC-Regular-2.otf.meta
+ps_driver_sdk.log
